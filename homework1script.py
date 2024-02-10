@@ -2,9 +2,33 @@ import pandas as pd #import neccesary packages
 import numpy as np
 import matplotlib.pyplot as plt
 
+import argparse
+import yaml
+
+parser = argparse.ArgumentParser(description='Dataset analysis script')
+parser.add_argument('output', type=str, help='Output filename')
+parser.add_argument('config', type=str, help='Path to the configuration file')
+args = parser.parse_args()
+
+# read arguments
+print(args.config)
+
+config_paths = ['user_config.yml']
+config_paths.append(args.config)
+
+print(config_paths)
+
+config = {}
+for path in config_paths:
+    with open(path, 'r') as f:
+        this_config = yaml.safe_load(f)
+        config.update(this_config)
+
+print(config)
+
 # Getting Started
 #1 Load the data to a single DataFrame
-green_vehicle= pd.read_excel('/Users/mariasemeniuk/Documents/GitHub/UofT-DSI/python/vehicles-utilizing-green-technology-november-2023.xlsx')
+green_vehicle= pd.read_excel(config['input'])
 
 #2 Profile the DataFrame
 green_vehicle.head()
@@ -110,6 +134,6 @@ ax = counts.plot.bar()  #create a bar plot from counts DataFrame
 plt.title('Number of Green Vehicles Owned by the City of Toronto')  #plot title
 plt.xlabel('Make') #plot x-axis label
 plt.ylabel('Count') #plot y-axis label
-ax.grid(alpha=0.3) #insert grid lines
+ax.grid(alpha=config['alpha']) #insert grid lines
 plt.show()
-plt.savefig('BuildingSoftwarePlot1.png')
+plt.savefig(args.output)
